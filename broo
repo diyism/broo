@@ -107,7 +107,7 @@ stop_mumble_client() {
 add_sink_pipewire() {
     # Creates a virtual sink using a PipeWire loopback, and saves its PID.
 
-    echo 'start pw-loopback'
+    echo 'to start pw-loopback'
     nohup pw-loopback \
         --capture-props='media.class=Audio/Sink
                          node.name=Shru node.description=Shru' \
@@ -115,7 +115,7 @@ add_sink_pipewire() {
 
     echo $! > "$VAR_RUN/pw_loopback.pid"
     sleep 3  # Give time for it to set up.
-    echo 'finish pw-loopback'
+    echo 'started pw-loopback'
 }  # End of add_sink_pipewire()
 
 
