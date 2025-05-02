@@ -36,6 +36,7 @@ VAR_RUN="/var/run/user/$UID/broo"
 BROO_CFG_LOC="$HOME/.config/broo"
 
 start_mumble_server() {
+    echo 'to start mumble server'
     # Starts the Mumble server.
     # The PID is saved automatically due to the config in ini file.
 
@@ -50,6 +51,7 @@ start_mumble_server() {
     echo $! > "$VAR_RUN/murmur.pid"
 
     sleep 3  # Give time for it to set up.
+    echo 'started mumble server'
 }  # End of start_mumble_server()
 
 
@@ -64,6 +66,7 @@ stop_mumble_server() {
 
 
 start_mumble_client () {
+    echo 'to start mumble client'
     # Starts the Mumble client (with logs for monitoring), stores its PID,
     # and waits till the connection to server is established.
 
@@ -80,11 +83,14 @@ start_mumble_client () {
     # Save the PID.
     echo $! > "$VAR_RUN/mumble_client.pid"
 
+    echo 'to wait for connection to server'
     # Wait till we establish a conenction. Upon connection, a line is logged
     # starting with "ServerHandler: TLS cipher", so we monitor the logs.
     # tail + grep idea by 00prometheus on <https://superuser.com/a/900134>.
     (tail -f "$VAR_RUN/mumble_client.out" &) | grep --line-buffered -q \
                                                     "ServerHandler: TLS cipher"
+
+    echo 'started mumble client'
 }  # End of start_mumble_client()
 
 
@@ -101,6 +107,7 @@ stop_mumble_client() {
 add_sink_pipewire() {
     # Creates a virtual sink using a PipeWire loopback, and saves its PID.
 
+    echo 'start pw-loopback'
     nohup pw-loopback \
         --capture-props='media.class=Audio/Sink
                          node.name=Shru node.description=Shru' \
@@ -108,6 +115,7 @@ add_sink_pipewire() {
 
     echo $! > "$VAR_RUN/pw_loopback.pid"
     sleep 3  # Give time for it to set up.
+    echo 'finish pw-loopback'
 }  # End of add_sink_pipewire()
 
 
@@ -149,6 +157,7 @@ remove_sink_pulseaudio() {
 
 add_sink() {
     # Adds a sink named Shru (श्रु) to listen to / capture the Mumble output.
+    echo "start adding sink"
 
     # Check if PipeWire used ("PipeWire" will be a substring in output).
     if [[ $(pactl info | grep "^Server Name") =~ "PipeWire" ]]; then
